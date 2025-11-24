@@ -15,6 +15,8 @@
 
 int count = 0;
 bool on = false;
+const uint LED_PIN = 16;
+
 
 //#define MAIN_TASK_PRIORITY      ( tskIDLE_PRIORITY + 1UL )
 //#define MAIN_TASK_STACK_SIZE configMINIMAL_STACK_SIZE
@@ -23,25 +25,15 @@ bool on = false;
 
 void blink_task(__unused void *params) {
     hard_assert(cyw43_arch_init() == PICO_OK);
-    // while (true) {
 
-        
-    //     cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, on);
-    //     if (count++ % 11) on = !on;
-    //     vTaskDelay(500);
-    // }
-
-    // Select GPIO 16 (pin 21 on the Pico)
-    const uint PIN = 16;
-
-    gpio_init(PIN);               // Initialize the GPIO
-    gpio_set_dir(PIN, GPIO_OUT);  // Set as output
-    gpio_disable_pulls(PIN);      // Disable pull-up and pull-down resistors
+    gpio_init(LED_PIN);               // Initialize the GPIO
+    gpio_set_dir(LED_PIN, GPIO_OUT);  // Set as output
+    gpio_disable_pulls(LED_PIN);      // Disable pull-up and pull-down resistors
 
     while (1) {
-        gpio_put(PIN, 1);
+        gpio_put(LED_PIN, 1);
         vTaskDelay(500);
-        gpio_put(PIN, 0);
+        gpio_put(LED_PIN, 0);
         vTaskDelay(500);
     }
 }
@@ -60,11 +52,39 @@ void blink_task(__unused void *params) {
 int main( void )
 {
     stdio_init_all();
-    const char *rtos_name;
-    rtos_name = "FreeRTOS";
-    TaskHandle_t task;
-    xTaskCreate(blink_task, "BlinkThread",
-                BLINK_TASK_STACK_SIZE, NULL, BLINK_TASK_PRIORITY, NULL);
-    vTaskStartScheduler();
+
+    //Number 1: sleep_ms to delay iterations
+    hard_assert(cyw43_arch_init() == PICO_OK);
+
+    // Select GPIO 16 (pin 21 on the Pico)
+
+    gpio_init(LED_PIN);               // Initialize the GPIO
+    gpio_set_dir(LED_PIN, GPIO_OUT);  // Set as output
+    gpio_disable_pulls(LED_PIN);      // Disable pull-up and pull-down resistors
+
+    while (1) {
+        gpio_put(LED_PIN, 1);
+        sleep_ms(500);
+        gpio_put(LED_PIN, 0);
+        sleep_ms(500);
+    }
+
+    //Number 2: FreeRTOS with a thread
+    //const char *rtos_name;
+    //rtos_name = "FreeRTOS";
+    //TaskHandle_t task;
+    //xTaskCreate(blink_task, "BlinkThread",
+    //            BLINK_TASK_STACK_SIZE, NULL, BLINK_TASK_PRIORITY, NULL);
+    //vTaskStartScheduler();
+
+    //Number 3: Run a busy loop
+    // while(1) {
+    //     uint32_t k;
+    //     for (int i = 0; i < 30) {
+    //         uint32_t j = 0;
+    //         j = ((~j >> i) + 1) * 27644437;
+    //         k = j;
+    //     }
+    // }
     return 0;
 }
