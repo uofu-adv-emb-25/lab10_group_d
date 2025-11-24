@@ -17,6 +17,16 @@ else()
     set(PICO_SDK_PATH lib/pico-sdk)
 endif()
 
+if (DEFINED PICO_EXTRAS_PATH)
+# Already defined, e.g. -D flag
+elseif (DEFINED ENV{PICO_EXTRAS_PATH})
+# Defined in an environment variable
+    set(PICO_EXTRAS_PATH $ENV{PICO_EXTRAS_PATH})
+else()
+# Use the submodule
+    set(PICO_EXTRAS_PATH lib/pico-extras)
+endif()
+
 if (DEFINED FREERTOS_PATH)
 # Already defined, e.g. -D flag
 elseif(DEFINED ENV{FREERTOS_PATH})
@@ -52,6 +62,7 @@ set(PICO_BOARD pico_w CACHE STRING "Board type")
 
 # This imports the Pico SDK (must be included before the project)
 include(${PICO_SDK_PATH}/pico_sdk_init.cmake)
+include(${PICO_EXTRAS_PATH}/external/pico_extras_import.cmake)
 
 # This imports the library configuration for FreeRTOS
 include(${FREERTOS_PATH}/portable/ThirdParty/GCC/RP2040/FreeRTOS_Kernel_import.cmake)
@@ -61,6 +72,8 @@ include(unity.cmake)
 
 # This defines your project name, you can name it anything you want.
 project(myproject C CXX ASM)
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 # These are some macros from the pico SDK that do some setup.
 pico_sdk_init()
