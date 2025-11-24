@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <stdio.h>
+#pragma GCC optimize ("O0")
+ #include <stdio.h>
 
 #include "FreeRTOS.h"
 #include "task.h"
