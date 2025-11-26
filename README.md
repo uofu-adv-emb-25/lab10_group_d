@@ -8,3 +8,5 @@ Scenario 2: FREERTOS with a thread
 P = 114-129 mW
 
 Scenario 3: Run busy loop
+36 mA @ 3 V
+P = 108 mW
