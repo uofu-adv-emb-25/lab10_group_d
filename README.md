@@ -14,6 +14,7 @@ Scenario 3: Run busy loop
 Scenario 4: Set up an interrupt to toggle a GPIO in response to an external signal
 
 31 mA when the signal generator is off P = 93 mW
+
 35 mA @ 1 KHz P = 105 mW
 
 41 mA @ 500 KHz P = 123 mW
